@@ -6,7 +6,7 @@ const path = require("path");
 
 const { trackView, getStats } = require("./analytics");
 
-const PORT = 3000;
+const PORT = Number(process.env.PORT) || 3000;
 const cvPath = path.join(__dirname, "cv.html");
 
 function send(res, status, headers, body) {

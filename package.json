@@ -1,0 +1,10 @@
+{
+  "name": "damir-cv-sayaci",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Node.js ile CV görüntülenme sayacı (cookie tabanlı unique + 10 dk cooldown) ve /stats istatistik sayfası.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  }
+}

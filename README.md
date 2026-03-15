@@ -36,10 +36,31 @@ This repository is a simple **CV page view analytics** app built for an assignme
 ## Kurulum / çalıştırma (Windows - PowerShell)
 
 - `cd "c:\Users\User\Desktop\Web Programlama"`
-- `node .\server.js`
+- `npm start`
 - Tarayıcı:
   - `http://localhost:3000/cv`
   - `http://localhost:3000/stats`
+
+## Deploy (Render)
+
+1. Render → **New +** → **Web Service**
+2. GitHub repo’nu seç
+3. Ayarlar:
+   - **Environment:** Node
+   - **Build Command:** `npm install`
+   - **Start Command:** `npm start`
+4. Deploy bitəndən sonra Render sənə URL verəcək:
+   - `https://<app-adiniz>.onrender.com/cv`
+   - `https://<app-adiniz>.onrender.com/stats`
+
+## Deploy (Railway)
+
+1. Railway → **New Project** → **Deploy from GitHub Repo**
+2. Repo’nu seç → Deploy
+3. Start command avtomatik tapılmazsa: `npm start`
+4. Railway URL verəcək:
+   - `https://<app-adiniz>.up.railway.app/cv`
+   - `https://<app-adiniz>.up.railway.app/stats`
 
 ## Teslim kontrol listesi
 
@@ -47,9 +68,11 @@ This repository is a simple **CV page view analytics** app built for an assignme
 - Sayaç ve unique mantığı: `analytics.js`
 - Sunucu: `server.js`
 - Kalıcı veri: `analytics.json`
+- Proje ayarları: `package.json`
 - Açıklama: `README.md`
 
 ## Sınırlamalar
 
 - Unique sayımı cookie tabanlıdır.
 - Cookie silinirse veya farklı tarayıcı/cihaz kullanılırsa yeni kullanıcı sayılır.
+- `analytics.json` dosyası dosya sistemine yazdığı için bazı hostinglerde (yeniden başlatmada) sıfırlanabilir.
