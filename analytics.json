@@ -1,5 +1,14 @@
 {
-  "totalViews": 0,
-  "uniqueViews": 0,
-  "visitors": {}
+  "totalViews": 2,
+  "uniqueViews": 1,
+  "visitors": {
+    "9cc96d62176d7b662ea3630e46fed047": {
+      "firstSeenAt": "2026-04-11T23:56:38.079Z",
+      "lastCountedAt": 1775951798079
+    },
+    "e25471fd99e349bd6417ccd68e0131c0": {
+      "firstSeenAt": "2026-04-12T05:56:28.116Z",
+      "lastCountedAt": 1775973388116
+    }
+  }
 }

@@ -26,7 +26,30 @@ const server = http.createServer((req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
   const pathname = url.pathname;
 
-  if (pathname === "/" || pathname === "/cv" || pathname === "/cv.html") {
+  // Serve Static Files (CSS, JS)
+  if (pathname.endsWith(".css") || pathname.endsWith(".js")) {
+    const filePath = path.join(__dirname, pathname);
+    if (fs.existsSync(filePath)) {
+      const ext = path.extname(pathname);
+      const mimeTypes = {
+        ".css": "text/css",
+        ".js": "application/javascript"
+      };
+      res.writeHead(200, { "Content-Type": mimeTypes[ext] || "text/plain" });
+      return res.end(fs.readFileSync(filePath));
+    }
+  }
+
+  // Dashboard (Root)
+  if (pathname === "/") {
+    const dashboardPath = path.join(__dirname, "index.html");
+    if (fs.existsSync(dashboardPath)) {
+      return sendHtml(res, fs.readFileSync(dashboardPath, "utf8"));
+    }
+  }
+
+  // CV Page
+  if (pathname === "/cv" || pathname === "/cv.html") {
     const track = trackView({ cookieHeader: req.headers.cookie, pathName: pathname });
 
     let html = "";
@@ -36,7 +59,7 @@ const server = http.createServer((req, res) => {
       return send(res, 500, { "Content-Type": "text/plain; charset=utf-8" }, "cv.html okunamadı");
     }
 
-    const nav = `\n<hr />\n<p><a href="/stats">Görüntüleme İstatistikleri</a></p>\n`;
+    const nav = `\n<hr />\n<p><a href="/stats">Görüntüleme İstatistikleri</a> | <a href="/">Görev Paneli</a></p>\n`;
     if (html.includes("</body>")) {
       html = html.replace("</body>", `${nav}</body>`);
     } else {
@@ -61,7 +84,7 @@ const server = http.createServer((req, res) => {
 <body>
   <header>
     <h1>Görüntüleme İstatistikleri</h1>
-    <p><a href="/cv">CV Sayfasına Dön</a></p>
+    <p><a href="/cv">CV Sayfasına Dön</a> | <a href="/">Görev Paneli</a></p>
     <hr />
   </header>
 
@@ -97,5 +120,7 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`Server çalışıyor: http://localhost:${PORT}/cv`);
+  console.log(`Server çalışıyor: http://localhost:${PORT}`);
+  console.log(`Dashboard: http://localhost:${PORT}/`);
+  console.log(`CV: http://localhost:${PORT}/cv`);
 });

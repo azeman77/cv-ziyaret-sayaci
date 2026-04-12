@@ -1,78 +1,66 @@
-# CV Ziyaret Sayacı (Node.js)
+# Web Programlama - Dönem Sonu Projesi: Kurumsal Görev Paneli ve İzleme Altyapılı CV Sistemi
 
-## Türkçe
+## 1. Proje Özeti
+Bu proje deposu (repository), **Web Programlama** dersi kapsamında baştan sona yapılandırılmış üç temel modülü içermektedir:
+1. **Corporate Task Dashboard (Kurumsal Görev Paneli):** Dış kütüphane kullanılmadan (Zero-dependency) inşa edilmiş Vanilla JS ve CSS3 odaklı tek sayfalı uygulama (SPA). (Erişim: `/`)
+2. **Semantik CV:** Sadece HTML5 standartları ve anlamsal etiketlerle (semantic tags) kurgulanmış web sayfası. (Erişim: `/cv`)
+3. **Analitik İzleme ve Sayaç (Node.js):** CV sayfasını ziyaret eden tekil ve toplam kullanıcıları çerez kontrolü (cookie) ile sayan backend altyapısı. (Erişim: `/stats`)
 
-Bu repo, ödev kapsamında hazırlanan basit bir **CV görüntülenme analitiği** uygulamasıdır.
+## 2. Geliştirilen İşlevler ve Çalışma Mantığı
+### A - Corporate Task Dashboard (Görev Paneli)
+- **State Yönetimi:** Görev listeleri, saf ES6+ ile JavaScript içerisinde izole edilerek (Module Pattern) kontrol edilmektedir. Global scope kirliliği önlenmiştir.
+- **Performans:** Yeni bir görev eklenirken sayfa yenilenmez. DOM modifikasyonları, `DocumentFragment` API'si ile optimize edilmiştir ve tarayıcının reflow/repaint donmaları asgari seviyeye indirilmiştir.
+- **Persistency (Kalıcılık):** Tüm form ve görev verileri tarayıcı hafızasına (`localStorage`) anında aktarılır; cihaz veya sekme kapatıldığında verilerin daimi olması güvenceye alınmıştır.
+- **Tasarım Mimarisi:** Responsive, modern CSS Variable'larla desteklenen 'Kurumsal' (Corporate Blue) tema kullanılmıştır.
 
-- `cv.html` sayfasının **toplam görüntülenme** sayısını tutar.
-- Aynı kişinin tekrar girişlerini **cookie (cv_vid)** ile ayırt ederek **farklı kişi (unique)** sayısını hesaplar.
-- Toplam görüntülenme sayısı, aynı ziyaretçi için **en az 10 dakika** aralıkla artırılır (sayfa yenilemesi ile şişmesin diye).
-- İstatistikler ayrı bir sayfada gösterilir: `/stats`.
+### B - Node.js Analitik Sistemi ve Ziyaretçi Sayacı
+- Ziyaret edilen ekrana yapılan ilk HTTP isteğinde, `crypto` modülü yardımıyla rastgele bir `cv_vid` eşsiz kimliği üretilir ve istemciye cookie olarak gönderilir.
+- **Farklı Kişi (Unique) Tespiti:** Çerez verisi mevcutta var ise, bu kullanıcı bilinen (tanınan) misafir listesinde sayılır.
+- **Refresh Spam Koruması:** Kullanıcı sürekli sayfayı yenilese dahi, sistem toplam görüntüleme (Total Views) miktarını **10 dakika bekleme (cooldown)** kuralına uygunsa artırır.
+- Veriler sunucu belleğinde geçici kalmaz, arkaplanda asenkron bir biçimde `analytics.json` dosyasına yazılır.
 
-## English
+## 3. Kurulum ve Çalıştırma (Lokal Ortam)
 
-This repository is a simple **CV page view analytics** app built for an assignment.
+```bash
+# Proje dizinine gidin
+cd "c:\Users\User\Desktop\Web Programlama"
 
-- Tracks the **total number of views** for `cv.html`.
-- Uses a browser cookie (`cv_vid`) to identify returning visitors and compute **unique visitors**.
-- The total view counter is rate-limited per visitor to **at least 10 minutes** (to avoid inflating counts by page refresh).
-- Statistics are displayed on a separate page: `/stats`.
+# Sunucuyu başlatın
+npm start
+```
+* **Görev Paneli (Ana Sayfa):** `http://localhost:3000/` veya uygulamanın atadığı portta örn. `http://localhost:3001/`
+* **CV Sayfası:** `http://localhost:3000/cv`
+* **İstatistikler:** `http://localhost:3000/stats`
 
----
+## 4. Kullanılan Teknolojiler
+- **Backend:** Node.js (Saf `http`, `fs`, `crypto`, `path` modülleri kullanılmıştır, Express.js gibi bağımlılıklardan arındırılmıştır).
+- **Frontend:** Vanilla JS (ES6+), Modern CSS3 (Grid/Flexbox), HTML5 A11y.
+- **Database:** JSON tabanlı dosya mekanizması.
 
-## Sayfalar
+## 5. Dağıtım (Deploy) Rehberi
 
-- `GET /cv` (veya `/`) → `cv.html` sayfasını gösterir ve görüntülenmeyi kaydeder
-- `GET /stats` → toplam görüntüleme ve farklı kişi sayılarını gösterir
-
-## Nasıl çalışır?
-
-- CV sayfası açıldığında sunucu `cv_vid` adlı cookie'yi kontrol eder.
-- Cookie yoksa yeni bir kimlik üretir ve tarayıcıya yazar.
-- Aynı tarayıcı cookie'yi silmediği sürece tekrar girse bile **unique artmaz**.
-- Toplam görüntüleme sayısı, aynı ziyaretçi için **en az 10 dakika** aralıkla artırılır (sayfa yenilemesi ile şişmesin diye).
-- Veriler `analytics.json` dosyasında saklanır.
-
-## Kurulum / çalıştırma (Windows - PowerShell)
-
-- `cd "c:\Users\User\Desktop\Web Programlama"`
-- `npm start`
-- Tarayıcı:
-  - `http://localhost:3000/cv`
-  - `http://localhost:3000/stats`
-
-## Deploy (Render)
-
-1. Render → **New +** → **Web Service**
-2. GitHub repo’nu seç
-3. Ayarlar:
+### Render (render.com) Deployment
+1. Render paneline girin -> **New +** -> **Web Service**
+2. GitHub reponuzu seçin.
+3. Ayarlar bölümünden:
    - **Environment:** Node
-   - **Build Command:** `npm install`
-   - **Start Command:** `npm start`
-4. Deploy bitəndən sonra Render sənə URL verəcək:
-   - `https://<app-adiniz>.onrender.com/cv`
-   - `https://<app-adiniz>.onrender.com/stats`
+   - **Build Command:** *(Boş bırakılabilir)*
+   - **Start Command:** `node server.js`
+4. Deploy işlemi bitince verilen URL üzerinden tüm projeyi (Dashboard, CV, Stats) inceleyebilirsiniz.
 
-## Deploy (Railway)
+### Railway (railway.app) Deployment
+1. Railway sistemine giriş yapınız -> **New Project** -> **Deploy from GitHub Repo**
+2. İlgili Reponuzu seçip dağıtımı başlatın.
+3. Komut sistemi `npm start` olarak çalışacaktır.
 
-1. Railway → **New Project** → **Deploy from GitHub Repo**
-2. Repo’nu seç → Deploy
-3. Start command avtomatik tapılmazsa: `npm start`
-4. Railway URL verəcək:
-   - `https://<app-adiniz>.up.railway.app/cv`
-   - `https://<app-adiniz>.up.railway.app/stats`
+## 6. Proje Dosya Yapısı (Teslim Listesi)
+- `index.html` & `style.css` & `script.js` -> Görev Paneli Modülü (Corporate Task Dashboard)
+- `cv.html` -> Saf HTML Semantik CV Sayfası
+- `server.js` -> Ana HTTP Sunucusu ve Routing Servisleri
+- `analytics.js` & `analytics.json` -> Çerez bazlı trafik tespit ve sayaç mantığı
+- `package.json` -> Bağımsızlık script'i (NPM Start)
+- `README.md` -> Proje Akademik Dokümantasyonu
 
-## Teslim kontrol listesi
-
-- CV sayfası: `cv.html`
-- Sayaç ve unique mantığı: `analytics.js`
-- Sunucu: `server.js`
-- Kalıcı veri: `analytics.json`
-- Proje ayarları: `package.json`
-- Açıklama: `README.md`
-
-## Sınırlamalar
-
-- Unique sayımı cookie tabanlıdır.
-- Cookie silinirse veya farklı tarayıcı/cihaz kullanılırsa yeni kullanıcı sayılır.
-- `analytics.json` dosyası dosya sistemine yazdığı için bazı hostinglerde (yeniden başlatmada) sıfırlanabilir.
+## 7. Sistem Sınırlamaları ve Notlar
+- Tekil (Unique) sayımı Cookie altyapısına dayanır. Kullanıcı çerezleri temizler veya incognito (gizli) pencere açarsa sunucu tarafından yeni olarak sayılır.
+- Free web hosting hizmetlerinde dosya sistemine kalıcı yazım kısıtlanabiliyorsa `analytics.json` sunucu uyku moduna geçip kalktığında resetlenebilir.
